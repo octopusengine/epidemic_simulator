@@ -5,10 +5,13 @@ from math import sqrt
 
 worldXY = (180,130)
 peoples = 1000
+
+threshold_resistance = 30   # 0 - nobody / test 30
+dist_infect = 5             # infection 3 (100*100)/ 5 / 7 / 10
+bmax = 3                    # movement (brown) 1,2,3, 5
+
+time_infect = 10 # 5 + / 10 +
 size = 5
-dist_infect = 3  # infection 3 (100*100)/ 5 / 7 / 10
-time_infect = 10 # 5 + / 10 + 
-bmax = 5         # movement (brown) 1,2,3, 5
 
 sizeWinX=worldXY[0] * size + 150
 sizeWinY=worldXY[1] * size + 35
@@ -45,6 +48,9 @@ chy = 600
 chx = xi-30
 ydel = 2
 
+# statistic:
+oldinf = 1
+
 
 print("start-simulator")
 print()
@@ -59,6 +65,7 @@ def distance(x1,y1,x2,y2):
 class People():
     def __init__(self, i, z = 0):
         self.i = i
+        self.resistance = randrange(100)
         if (i == 5): # prvni nakazeny
              self.x = worldXY[0]/2
              self.y = worldXY[1]/2
@@ -116,10 +123,15 @@ class World():
                         col = colYel
                 else:
                     col = colBla
+                    
+                if self.w[i].resistance < threshold_resistance:
+                    col = colBlu
+                    
                 self.w[i].ds_show(col)
                 pygame.display.flip()
 
     def infection(self):
+        global oldinf
         numi = 0
         numti = 0
         for i in range(self.num):
@@ -128,14 +140,17 @@ class World():
                numi += 1 
                # test
                for j in range(self.num):
-                   dist = distance(self.w[i].x, self.w[i].y, self.w[j].x, self.w[j].y) 
-                   if dist < dist_infect:
-                       self.w[j].z = 5
-            if self.w[i].ti > time_infect:
-                numti += 1 
-                       
+                   if self.w[j].resistance > threshold_resistance:
+                       dist = distance(self.w[i].x, self.w[i].y, self.w[j].x, self.w[j].y) 
+                       if dist < dist_infect:
+                           self.w[j].z = 5
+               if self.w[i].ti > time_infect:
+                   numti += 1 
 
-        text1 = font.render(str(world_time), True, colBlu)
+        r0 = numi / oldinf
+        oldinf = numi
+
+        text1 = font.render(str(world_time) + " | "+ str(r0), True, colBlu)
         text2 = font.render(str(numi), True, colRed)
         text3 = font.render(str(numti), True, colYel)
 
@@ -148,6 +163,7 @@ class World():
         # chart:
         pygame.draw.rect(screen,colRed,(chx+world_time*2,chy-numi/ydel,2,numi/ydel))
         pygame.draw.rect(screen,colYel,(chx+world_time*2,chy-numti/ydel,2,numti/ydel))
+        pygame.draw.rect(screen,colBlu,(chx+world_time*2,chy-int(r0/ydel*100),2,2))
         pygame.draw.line(screen,colBla,(chx,chy),(xi+100,chy))
         pygame.draw.line(screen,colBla,(chx,chy-100/ydel),(chx+100,chy-100/ydel))
         pygame.draw.line(screen,colBla,(chx,chy-200/ydel),(chx+100,chy-200/ydel))
@@ -171,16 +187,20 @@ class World():
         pygame.display.flip()
 
 
+
 # ======================================================
 
 w = World(peoples)
 
-text_info = "simulation: peoples " + str(peoples) + " | inf.distance " + str(dist_infect) + " | move " + str(bmax)
+text_info = "epidemic simulation: peoples " + str(peoples) + " | resistence " +  str(threshold_resistance) + "% | inf.distance " + str(dist_infect) + " | move " + str(bmax)
 text = font.render(text_info, True, colBla)
 screen.blit(text, (10, sizeWinY-30))
 pygame.display.flip()
 
 for world_time in range(51): # number of steps (days)
+    print("=============================")
+    print(world_time)
+    print("-----------------------------")
     #w.clear()
     w.infection()
     w.brown()

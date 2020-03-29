@@ -48,9 +48,6 @@ chy = 600
 chx = xi-30
 ydel = 2
 
-# statistic:
-oldinf = 1
-
 
 print("start-simulator")
 print()
@@ -93,6 +90,7 @@ class World():
   
     def __init__(self, n=10):
         self.num = n
+        self.old_inf = 1
         self.w = []
         for i in range(self.num):
             self.w.append(People(i))
@@ -131,7 +129,6 @@ class World():
                 pygame.display.flip()
 
     def infection(self):
-        global oldinf
         numi = 0
         numti = 0
         for i in range(self.num):
@@ -147,8 +144,8 @@ class World():
                if self.w[i].ti > time_infect:
                    numti += 1 
 
-        r0 = numi / oldinf
-        oldinf = numi
+        r0 = numi / self.old_inf
+        self.old_inf = numi
 
         text1 = font.render(str(world_time) + " | "+ str(r0), True, colBlu)
         text2 = font.render(str(numi), True, colRed)
@@ -205,14 +202,3 @@ for world_time in range(51): # number of steps (days)
     w.infection()
     w.brown()
     #w.show()
-
-
-
-
-        
-
-
-
-
-
-

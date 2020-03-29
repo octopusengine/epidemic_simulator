@@ -6,9 +6,9 @@ from math import sqrt
 worldXY = (180,130)
 peoples = 1000
 
-threshold_resistance = 30   # 0 - nobody / test 30
-dist_infect = 5             # infection 3 (100*100)/ 5 / 7 / 10
-bmax = 3                    # movement (brown) 1,2,3, 5
+threshold_resistance = 10   # 0 - nobody / test 30
+dist_infect = 3             # infection 3 (100*100)/ 5 / 7 / 10
+bmax = 5                    # movement (brown) 1,2,3, 5
 
 time_infect = 10 # 5 + / 10 +
 size = 5
@@ -124,7 +124,7 @@ class World():
                 else:
                     col = colBla
                     
-                if self.w[i].resistance < threshold_resistance:
+                if self.w[i].resistance <= threshold_resistance:
                     col = colBlu
                     
                 self.w[i].ds_show(col)
@@ -210,7 +210,6 @@ for world_time in range(51): # number of steps (days)
 
 
         
-
 
 
 

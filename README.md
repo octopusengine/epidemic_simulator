@@ -24,4 +24,7 @@ dist_infect = Distance infection
 bmax = Brownian motion + / - 
    
    random motion: +/-x,+/-y
+   
+   
+<img src="https://github.com/octopusengine/epidemic_simulator/blob/master/simul_10_3_5i.png" width = 600>   
 

@@ -191,7 +191,7 @@ screen.blit(text, (10, sizeWinY-30))
 pygame.display.flip()
 
 for world_time in range(51): # number of steps (days)
-   print("=============================")
+    print("=============================")
     print(world_time)
     print("-----------------------------")
     #w.clear()

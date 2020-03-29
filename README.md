@@ -7,15 +7,17 @@ peoples = number of "person"
 class people => single person
 
     random positon: x,y
-    dynamic infection: status vector 0-9 (5 = infection)
-    time of inf.
+    dynamic infection: status vector 0-9 (5 = infection, red color)
+    time of inf. red -> yellow
     ...
     
     
 class world = peoples
 
 
-threshold_resistance: 30 => 30% of population is completely resistant
+threshold_resistance: 
+   30 => 30% of population is completely resistant 
+   (blue color)
 
 
 dist_infect = Distance infection

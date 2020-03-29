@@ -1,7 +1,7 @@
 world size: worldXY (xmax, ymax)
 
 
-peoples = number of "person" 
+peoples = number of "persons" 
 
 
 class people => single person
@@ -12,7 +12,7 @@ class people => single person
     ...
     
     
-class world = peoples
+class world => all peoples
   
    
 <img src="https://github.com/octopusengine/epidemic_simulator/blob/master/simul_10_3_5i.png" width = 600> 

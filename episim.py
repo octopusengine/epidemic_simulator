@@ -147,7 +147,7 @@ class World():
                 self.w[i].ds_show(col)
                 pygame.display.flip()
 
-    def infection(self):
+    def infection(self, world_time):
         numi = 0
         numti = 0
         numtic = 0
@@ -211,6 +211,16 @@ class World():
         pygame.display.flip()
 
 
+class Simulation:
+    def step(self, world_time):
+        w.infection(world_time)
+        w.brown()
+
+    def run(self, count=51):
+        for world_time in range(count): # number of steps (days)
+            self.step(world_time)
+
+
 # =============== main =====================
 w = World(peoples)
 
@@ -219,11 +229,5 @@ text = font.render(text_info, True, colBla)
 screen.blit(text, (10, sizeWinY-30))
 pygame.display.flip()
 
-for world_time in range(51): # number of steps (days)
-    print("=============================")
-    print(world_time)
-    print("-----------------------------")
-    #w.clear()
-    w.infection()
-    w.brown()
-    #w.show()
+simulation = Simulation()
+simulation.run()

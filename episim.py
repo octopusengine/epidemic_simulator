@@ -14,14 +14,14 @@ threshold_resistance = 10   # 0 - nobody / test 30
                             
 dist_infect = 3             # distance - infection 3 (100*100)/ 5 / 7 / 10
 
-bmax = 3                    # brownian motion  1,2,3, 5
+bmax = 5                    # brownian motion  1,2,3, 5
                             # 2 => random (-2,-1,0,1,2)
 
 serious_critical = 10       # (magenta) 5-20%
 
 time_infect = 7             # (yelow) 5/7/9 days (or "double" days)/ all active_cases
                             # = incubation period without symptoms
-time_cure = 30              # testing - the time required for complete cure                    
+time_cure = 30              # 30 - testing - the time required for complete cure                    
                             
 
 colYel = (255,255,0)
@@ -30,6 +30,7 @@ colRed = (255,0,0)
 colOra = (255,126,0)
 colMag = (255,0,255)
 colBlu = (0,0,255)
+colGre = (0,255,0)
 colSil = (200,200,200)
 colBla = (0,0,0) 
 
@@ -41,13 +42,13 @@ pygame.init()
 font = pygame.font.SysFont("comicsansms", 18)
 
 # text position:
-xi = sizeWinX - 90
+xi = sizeWinX - 95
 yiadd = 25
 yi1 = 60
 
 # chart position:
 chy = 600
-chx = xi-30
+chx = xi-39
 ydel = 2
 
 
@@ -121,6 +122,8 @@ class World():
                         else:
                             col = colMag # serious critical
 
+                elif self.people[i].z == 6:
+                    col = colGre
                 else:
                     col = colBla
                     
@@ -133,8 +136,12 @@ class World():
         numi = 0
         numti = 0
         numtic = 0
+        numtir = 0
         
         for i in range(self.num):
+            if self.people[i].z == 6:
+               numtir += 1
+               
             if self.people[i].z == 5:
                self.people[i].ti += 1 
                numi += 1         
@@ -159,11 +166,13 @@ class World():
         text2 = font.render(str(numi), True, colRed)
         text3 = font.render(str(numti), True, colYel)
         text4 = font.render(str(numtic), True, colMag)
+        text5 = font.render(str(numtir), True, colGre)
         pygame.draw.rect(screen,colSil,(xi,yi1,130,150))
         screen.blit(text1, (xi, yi1))
         screen.blit(text2, (xi, yi1 + yiadd))
         screen.blit(text3, (xi, yi1 + yiadd * 2))
         screen.blit(text4, (xi, yi1 + yiadd * 3))
+        screen.blit(text5, (xi, yi1 + yiadd * 4))
         
         # chart:
         pygame.draw.rect(screen,colRed,(chx+world_time*2,chy-numi/ydel,2,numi/ydel))
@@ -228,6 +237,6 @@ class Simulation:
 # =============== main =====================
 text_info = "epidemic simulation: people " + str(people) + " | resistence " +  str(threshold_resistance) + "% | inf.distance " + str(dist_infect) + " | move " + str(bmax)
 
-simulation = Simulation(text_info=text_info, count=51)
+simulation = Simulation(text_info=text_info, count=66)
 simulation.add(World(people))
 simulation.run()

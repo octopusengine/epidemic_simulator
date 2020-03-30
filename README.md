@@ -4,7 +4,7 @@ world size: worldXY (xmax, ymax)
 peoples = number of "persons" 
 
 
-class people => single person
+class Person => single person
 
     random positon: x,y
     dynamic infection: status vector 0-9 (5 = infection, red color)
@@ -12,8 +12,9 @@ class people => single person
     ...
     
     
-class world => all peoples
-  
+class World => all persons
+ 
+class Simulation - main loop
    
 <img src="https://github.com/octopusengine/epidemic_simulator/blob/master/simul_10_3_5i.png" width = 600> 
 

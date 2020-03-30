@@ -40,17 +40,6 @@ print("init_screen")
 pygame.init()
 font = pygame.font.SysFont("comicsansms", 18)
 
-screen = pygame.display.set_mode([sizeWinX,sizeWinY]) # Create the pygame window
-screen.fill(colSil)
-text = font.render("Infection | Simulation", True, colRed)
-screen.blit(text, (320 - text.get_width() // 2, 240 - text.get_height() // 2))
-pygame.display.flip()
-sleep(2)
-
-screen.fill(colSil)
-pygame.display.flip()
-
-
 # text position:
 xi = sizeWinX - 90
 yiadd = 25
@@ -88,10 +77,9 @@ class Person():
     def info(self):
         print(self.i,self.x,self.y,self.z)
 
-    def ds_show(self, col): #direct single
+    def ds_show(self, screen, col): #direct single
         pygame.draw.rect(screen,col,(self.x*size,self.y*size,size,size))
         pygame.display.flip()
-
 
 
 class World():
@@ -108,10 +96,10 @@ class World():
             print(self.people[i].info())
             i += 1
 
-    def brown(self, show = True):        
+    def brown(self, screen, show = True):        
         for i in range(self.num):
             if show:
-               self.people[i].ds_show(colSil)
+               self.people[i].ds_show(screen, colSil)
         
             self.people[i].x += randint(-bmax,bmax)
             if (self.people[i].x < 0): self.people[i].x = 0
@@ -139,9 +127,9 @@ class World():
                 if self.people[i].resistance > 100-threshold_resistance:
                     col = colBlu
                     
-                self.people[i].ds_show(col)
+                self.people[i].ds_show(screen, col)
 
-    def infection(self, world_time):
+    def infection(self, screen, world_time):
         numi = 0
         numti = 0
         numtic = 0
@@ -210,19 +198,30 @@ class Simulation:
         self.worlds.append(world)
 
     def init(self):
+        screen = self.screen = pygame.display.set_mode([sizeWinX,sizeWinY]) # Create the pygame window
+        screen.fill(colSil)
+        text = font.render("Infection | Simulation", True, colRed)
+        screen.blit(text, (320 - text.get_width() // 2, 240 - text.get_height() // 2))
+        pygame.display.flip()
+        sleep(2)
+
+        screen.fill(colSil)
+        pygame.display.flip()
+
         text = font.render(self.text_info, True, colBla)
         screen.blit(text, (10, sizeWinY-30))
         pygame.display.flip()
 
     def step(self, world_time):
         for world in self.worlds:
-            world.infection(world_time)
-            world.brown()
+            world.infection(self.screen, world_time)
+            world.brown(self.screen)
         pygame.display.flip()
 
     def run(self):
         self.init()
         for world_time in range(self.count): # number of steps (days)
+            # if ....
             self.step(world_time)
 
 

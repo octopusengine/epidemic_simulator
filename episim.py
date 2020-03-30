@@ -83,11 +83,7 @@ class Person():
              self.y = randrange(worldXY[1])
         # self.z = randrange(0,10)
         self.z = i
-        self.time = 0
         self.ti = 0 # time infection
-
-    def day(self):
-        self.time += 1
 
     def info(self):
         print(self.i,self.x,self.y,self.z)
@@ -106,7 +102,7 @@ class World():
         for i in range(self.num):
             self.people.append(Person(i))
 
-    def info(self): 
+    def info(self):
         i = 0
         for i in range(self.num):
             print(self.people[i].info())

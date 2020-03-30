@@ -6,7 +6,7 @@ from math import sqrt
 # pygame world size
 worldXY = (180,130)         # x, y
 size = 5                    # one person - pygame rectangle
-peoples = 1000
+people = 1000
 
 # main simulation variables
 threshold_resistance = 10   # 0 - nobody / test 30
@@ -71,14 +71,14 @@ def distance(x1,y1,x2,y2):
     return sqrt(x*x + y*y)
 
 
-class People():
+class Person():
     def __init__(self, i, z = 0):
         self.i = i
         self.resistance = randrange(100)
         if (i == 5): # prvni nakazeny
              self.x = worldXY[0]/2
              self.y = worldXY[1]/2
-        else:    
+        else:
              self.x = randrange(worldXY[0])
              self.y = randrange(worldXY[1])
         # self.z = randrange(0,10)
@@ -88,7 +88,7 @@ class People():
 
     def day(self):
         self.time += 1
-        
+
     def info(self):
         print(self.i,self.x,self.y,self.z)
 
@@ -102,38 +102,37 @@ class World():
     def __init__(self, n=10):
         self.num = n
         self.old_inf = 1
-        self.w = []
+        self.people = []
         for i in range(self.num):
-            self.w.append(People(i))
+            self.people.append(Person(i))
 
     def info(self): 
         i = 0
         for i in range(self.num):
-            print(self.w[i].info())
+            print(self.people[i].info())
             i += 1
 
     def brown(self, show = True):        
         for i in range(self.num):
             if show:
-               self.w[i].ds_show(colSil)
-               pygame.display.flip()
+               self.people[i].ds_show(colSil)
         
-            self.w[i].x += randint(-bmax,bmax)
-            if (self.w[i].x < 0): self.w[i].x = 0
-            if (self.w[i].x > worldXY[0]): self.w[i].x = worldXY[0]
-            self.w[i].y += randint(-bmax,bmax)
-            if (self.w[i].y < 0): self.w[i].y = 0
-            if (self.w[i].y > worldXY[1]): self.w[i].y = worldXY[1]
+            self.people[i].x += randint(-bmax,bmax)
+            if (self.people[i].x < 0): self.people[i].x = 0
+            if (self.people[i].x > worldXY[0]): self.people[i].x = worldXY[0]
+            self.people[i].y += randint(-bmax,bmax)
+            if (self.people[i].y < 0): self.people[i].y = 0
+            if (self.people[i].y > worldXY[1]): self.people[i].y = worldXY[1]
 
             if show:
-                if self.w[i].ti > time_cure: # test
-                    self.w[i].z = 6
-                    self.w[i].resistance = 90
+                if self.people[i].ti > time_cure: # test
+                    self.people[i].z = 6
+                    self.people[i].resistance = 90
                 
-                if self.w[i].z == 5:
+                if self.people[i].z == 5:
                     col = colRed
-                    if self.w[i].ti > time_infect:
-                        if self.w[i].resistance > serious_critical:
+                    if self.people[i].ti > time_infect:
+                        if self.people[i].resistance > serious_critical:
                             col = colYel
                         else:
                             col = colMag # serious critical
@@ -141,11 +140,10 @@ class World():
                 else:
                     col = colBla
                     
-                if self.w[i].resistance > 100-threshold_resistance:
+                if self.people[i].resistance > 100-threshold_resistance:
                     col = colBlu
                     
-                self.w[i].ds_show(col)
-                pygame.display.flip()
+                self.people[i].ds_show(col)
 
     def infection(self, world_time):
         numi = 0
@@ -153,19 +151,19 @@ class World():
         numtic = 0
         
         for i in range(self.num):
-            if self.w[i].z == 5:
-               self.w[i].ti += 1 
+            if self.people[i].z == 5:
+               self.people[i].ti += 1 
                numi += 1         
         
                # test
                for j in range(self.num):
-                   if self.w[j].resistance <= 100-threshold_resistance:
-                      dist = distance(self.w[i].x, self.w[i].y, self.w[j].x, self.w[j].y) 
+                   if self.people[j].resistance <= 100-threshold_resistance:
+                      dist = distance(self.people[i].x, self.people[i].y, self.people[j].x, self.people[j].y) 
                       if dist < dist_infect:
-                           self.w[j].z = 5
-               if self.w[i].ti > time_infect:
+                           self.people[j].z = 5
+               if self.people[i].ti > time_infect:
                    numti += 1
-                   if self.w[i].resistance <= serious_critical:
+                   if self.people[i].resistance <= serious_critical:
                        numtic +=1
                     
 
@@ -191,24 +189,22 @@ class World():
         pygame.draw.line(screen,colBla,(chx,chy),(xi+100,chy))
         pygame.draw.line(screen,colBla,(chx,chy-100/ydel),(chx+100,chy-100/ydel))
         pygame.draw.line(screen,colBla,(chx,chy-200/ydel),(chx+100,chy-200/ydel))
-        pygame.display.flip()
 
 
     def show(self):
         i = 0
         for i in range(self.num):
-            if self.w[i].z == 5:
+            if self.people[i].z == 5:
                 col = colRed
             else:
                 col = colBla
-            self.w[i].ds_show(col)
+            self.people[i].ds_show(col)
             print()
             i += 1
-        pygame.display.flip()
+        #pygame.display.flip()
 
     def clear(self):
         screen.fill(colSil)
-        pygame.display.flip()
 
 
 class Simulation:
@@ -238,8 +234,8 @@ class Simulation:
 
 
 # =============== main =====================
-text_info = "epidemic simulation: peoples " + str(peoples) + " | resistence " +  str(threshold_resistance) + "% | inf.distance " + str(dist_infect) + " | move " + str(bmax)
+text_info = "epidemic simulation: people " + str(people) + " | resistence " +  str(threshold_resistance) + "% | inf.distance " + str(dist_infect) + " | move " + str(bmax)
 
 simulation = Simulation(text_info=text_info, count=51)
-simulation.add(World(peoples))
+simulation.add(World(people))
 simulation.run()

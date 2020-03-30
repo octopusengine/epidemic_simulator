@@ -199,9 +199,6 @@ class World():
             i += 1
         #pygame.display.flip()
 
-    def clear(self):
-        screen.fill(colSil)
-
 
 class Simulation:
     def __init__(self, text_info, count):

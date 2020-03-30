@@ -212,22 +212,34 @@ class World():
 
 
 class Simulation:
-    def step(self, world_time):
-        w.infection(world_time)
-        w.brown()
+    def __init__(self, text_info, count):
+        self.text_info = text_info
+        self.count = count
+        self.worlds = []
 
-    def run(self, count=51):
-        for world_time in range(count): # number of steps (days)
+    def add(self, world):
+        self.worlds.append(world)
+
+    def init(self):
+        text = font.render(self.text_info, True, colBla)
+        screen.blit(text, (10, sizeWinY-30))
+        pygame.display.flip()
+
+    def step(self, world_time):
+        for world in self.worlds:
+            world.infection(world_time)
+            world.brown()
+        pygame.display.flip()
+
+    def run(self):
+        self.init()
+        for world_time in range(self.count): # number of steps (days)
             self.step(world_time)
 
 
 # =============== main =====================
-w = World(peoples)
-
 text_info = "epidemic simulation: peoples " + str(peoples) + " | resistence " +  str(threshold_resistance) + "% | inf.distance " + str(dist_infect) + " | move " + str(bmax)
-text = font.render(text_info, True, colBla)
-screen.blit(text, (10, sizeWinY-30))
-pygame.display.flip()
 
-simulation = Simulation()
+simulation = Simulation(text_info=text_info, count=51)
+simulation.add(World(peoples))
 simulation.run()

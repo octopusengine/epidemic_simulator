@@ -9,12 +9,12 @@ size = 5                    # one person - pygame rectangle
 people = 1000
 
 # main simulation variables
-threshold_resistance = 10   # 0 - nobody / test 30
+threshold_resistance = 15   # 0 - nobody / test 30
                             # = a totally resistant percentage of the population
                             
-dist_infect = 3             # distance - infection 3 (100*100)/ 5 / 7 / 10
+dist_infect = 2             # distance - infection 3 (100*100)/ 5 / 7 / 10
 
-bmax = 5                    # brownian motion  1,2,3, 5
+bmax = 3                    # (int) brownian motion  1,2,3, 5
                             # 2 => random (-2,-1,0,1,2)
 
 serious_critical = 10       # (magenta) 5-20%
@@ -34,7 +34,7 @@ colGre = (0,255,0)
 colSil = (200,200,200)
 colBla = (0,0,0) 
 
-sizeWinX = worldXY[0] * size + 150
+sizeWinX = worldXY[0] * size + 180
 sizeWinY = worldXY[1] * size + 35
 
 print("init_screen")
@@ -42,7 +42,7 @@ pygame.init()
 font = pygame.font.SysFont("comicsansms", 18)
 
 # text position:
-xi = sizeWinX - 95
+xi = sizeWinX - 120
 yiadd = 25
 yi1 = 60
 
@@ -113,6 +113,11 @@ class World():
                 if self.people[i].ti > time_cure: # test
                     self.people[i].z = 6
                     self.people[i].resistance = 90
+
+                if self.people[i].resistance > 100-threshold_resistance:
+                    col = colBlu
+                else:
+                    col = colBla
                 
                 if self.people[i].z == 5:
                     col = colRed
@@ -124,11 +129,6 @@ class World():
 
                 elif self.people[i].z == 6:
                     col = colGre
-                else:
-                    col = colBla
-                    
-                if self.people[i].resistance > 100-threshold_resistance:
-                    col = colBlu
                     
                 self.people[i].ds_show(screen, col)
 
@@ -158,7 +158,7 @@ class World():
                        numtic +=1
                     
 
-        r0 = numi / self.old_inf
+        r0 = round(numi / self.old_inf, 3)
         self.old_inf = numi
         
         # text:
@@ -175,10 +175,12 @@ class World():
         screen.blit(text5, (xi, yi1 + yiadd * 4))
         
         # chart:
-        pygame.draw.rect(screen,colRed,(chx+world_time*2,chy-numi/ydel,2,numi/ydel))
-        pygame.draw.rect(screen,colYel,(chx+world_time*2,chy-numti/ydel,2,numti/ydel))
-        pygame.draw.rect(screen,colMag,(chx+world_time*2,chy-numtic/ydel,2,numtic/ydel))
-        pygame.draw.rect(screen,colBlu,(chx+world_time*2,chy-int(r0/ydel*100),2,2))
+        td = 1  # steps > 70: 1 / 2
+        pygame.draw.rect(screen,colRed,(chx+world_time*td,chy-numi/ydel,2,numi/ydel))
+        pygame.draw.rect(screen,colYel,(chx+world_time*td,chy-numti/ydel,2,numti/ydel))
+        pygame.draw.rect(screen,colMag,(chx+world_time*td,chy-numtic/ydel,2,numtic/ydel))
+        pygame.draw.rect(screen,colBlu,(chx+world_time*td,chy-int(r0/ydel*100),2,2))
+        pygame.draw.rect(screen,colGre,(chx+world_time*td,chy-numtir/ydel,2,2))
         pygame.draw.line(screen,colBla,(chx,chy),(xi+100,chy))
         pygame.draw.line(screen,colBla,(chx,chy-100/ydel),(chx+100,chy-100/ydel))
         pygame.draw.line(screen,colBla,(chx,chy-200/ydel),(chx+100,chy-200/ydel))
@@ -237,6 +239,6 @@ class Simulation:
 # =============== main =====================
 text_info = "epidemic simulation: people " + str(people) + " | resistence " +  str(threshold_resistance) + "% | inf.distance " + str(dist_infect) + " | move " + str(bmax)
 
-simulation = Simulation(text_info=text_info, count=66)
+simulation = Simulation(text_info=text_info, count=151)
 simulation.add(World(people))
 simulation.run()

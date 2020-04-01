@@ -1,7 +1,5 @@
 world size: worldXY (xmax, ymax)
-
-
-peoples = number of "persons" 
+people = number of "persons" 
 
 
 class Person => single person

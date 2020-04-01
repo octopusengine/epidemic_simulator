@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# The MIT License (MIT)
+
 import pygame
 from random import randrange, randint
 from time import sleep
@@ -15,7 +17,7 @@ threshold_resistance = 15   # 0 - nobody / test 30
                             
 dist_infect = 2             # distance - infection 3 (100*100)/ 5 / 7 / 10
 
-bmax = 3                    # (int) brownian motion  1,2,3, 5
+brown_mov_max = 3           # (int) brownian motion  1,2,3, 5
                             # 2 => random (-2,-1,0,1,2)
 
 serious_critical = 10       # (magenta) 5-20%
@@ -23,8 +25,11 @@ serious_critical = 10       # (magenta) 5-20%
 time_infect = 7             # (yelow) 5/7/9 days (or "double" days)/ all active_cases
                             # = incubation period without symptoms
 time_cure = 30              # 30 - testing - the time required for complete cure                    
-                            
 
+slow_show = False           # True: every Person step by step move
+                            # False: all wordl step
+
+#----------------------------------------------------
 colYel = (255,255,0)
 colWhi = (255,255,255)
 colRed = (255,0,0)
@@ -52,10 +57,6 @@ chy = 600
 chx = xi-39
 ydel = 2
 
-
-print("start-simulator")
-
-
 def distance(x1,y1,x2,y2):
     x = abs(x1-x2)
     y = abs(y1-y2)
@@ -79,9 +80,10 @@ class Person():
     def info(self):
         print(self.i,self.x,self.y,self.z)
 
-    def ds_show(self, screen, col): #direct single
+    def ds_show(self, screen, col, flip = True): #direct single
         pygame.draw.rect(screen,col,(self.x*size,self.y*size,size,size))
-        pygame.display.flip()
+        if flip:
+            pygame.display.flip()
 
 
 class World():
@@ -98,40 +100,38 @@ class World():
             print(self.people[i].info())
             i += 1
 
-    def brown(self, screen, show = True):        
+    def brown(self, screen, slow_show = slow_show):
         for i in range(self.num):
-            if show:
-               self.people[i].ds_show(screen, colSil)
+            self.people[i].ds_show(screen, colSil, slow_show)
         
-            self.people[i].x += randint(-bmax,bmax)
+            self.people[i].x += randint(-brown_mov_max,brown_mov_max)
             if (self.people[i].x < 0): self.people[i].x = 0
             if (self.people[i].x > worldXY[0]): self.people[i].x = worldXY[0]
-            self.people[i].y += randint(-bmax,bmax)
+            self.people[i].y += randint(-brown_mov_max,brown_mov_max)
             if (self.people[i].y < 0): self.people[i].y = 0
             if (self.people[i].y > worldXY[1]): self.people[i].y = worldXY[1]
 
-            if show:
-                if self.people[i].ti > time_cure: # test
-                    self.people[i].z = 6
-                    self.people[i].resistance = 90
+            if self.people[i].ti > time_cure: # test
+                self.people[i].z = 6
+                self.people[i].resistance = 90
 
-                if self.people[i].resistance > 100-threshold_resistance:
-                    col = colBlu
-                else:
-                    col = colBla
+            if self.people[i].resistance > 100-threshold_resistance:
+                col = colBlu
+            else:
+                col = colBla
+            
+            if self.people[i].z == 5:
+                col = colRed
+                if self.people[i].ti > time_infect:
+                    if self.people[i].resistance > serious_critical:
+                        col = colYel
+                    else:
+                        col = colMag # serious critical
+
+            elif self.people[i].z == 6:
+                col = colGre
                 
-                if self.people[i].z == 5:
-                    col = colRed
-                    if self.people[i].ti > time_infect:
-                        if self.people[i].resistance > serious_critical:
-                            col = colYel
-                        else:
-                            col = colMag # serious critical
-
-                elif self.people[i].z == 6:
-                    col = colGre
-                    
-                self.people[i].ds_show(screen, col)
+            self.people[i].ds_show(screen, col,slow_show)
 
     def infection(self, screen, world_time):
         numi = 0
@@ -228,7 +228,7 @@ class Simulation:
         for world in self.worlds:
             world.infection(self.screen, world_time)
             world.brown(self.screen)
-        pygame.display.flip()
+            pygame.display.flip()
 
     def run(self):
         self.init()
@@ -237,9 +237,9 @@ class Simulation:
             self.step(world_time)
 
 
-# =============== main =====================
-text_info = "epidemic simulation: people " + str(people) + " | resistence " +  str(threshold_resistance) + "% | inf.distance " + str(dist_infect) + " | move " + str(bmax)
-
+# =============== main =================
+text_info = "epidemic simulation: people " + str(people) + " | resistence " +  str(threshold_resistance) + "% | inf.distance " + str(dist_infect) + " | move " + str(brown_mov_max)
+init_vector = (people, threshold_resistance, dist_infect, brown_mov_max)
 simulation = Simulation(text_info=text_info, count=151)
 simulation.add(World(people))
 simulation.run()

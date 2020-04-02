@@ -32,19 +32,21 @@ bmax = Brownian motion + / - (orange square)
    random motion: +/-x,+/-y
 
 
+::::::::::...........
 
+resistant (blue) 
 
-not infected
+not infected (black)
 
-asymptomatic
+infected (red)
 
-infected
+asymptomatic 
 
-symptomatic infected
+symptomatic infected (yellow)
 
-critical condition
+critical condition (violet)
 
-recovered 
+recovered (green)
 
-recovered a resistant
+recovered a resistant (dark green)
 

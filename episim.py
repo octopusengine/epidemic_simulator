@@ -28,6 +28,7 @@ time_cure = 30              # 30 - testing - the time required for complete cure
 
 slow_show = False           # True: every Person step by step move
                             # False: all wordl step
+steps_of_simulation = 150
 
 #----------------------------------------------------
 # slow_show = input("Fast or slow? 1/0: ")
@@ -235,7 +236,7 @@ class Simulation:
 
     def run(self):
         self.init()
-        for world_time in range(self.count): # number of steps (days)
+        for world_time in range(self.count + 1): # number of steps (days)
             # if ....
             self.step(world_time)
 
@@ -243,6 +244,6 @@ class Simulation:
 # =============== main =================
 text_info = "epidemic simulation: people " + str(people) + " | resistence " +  str(threshold_resistance) + "% | inf.distance " + str(dist_infect) + " | move " + str(brown_mov_max)
 init_vector = (people, threshold_resistance, dist_infect, brown_mov_max)
-simulation = Simulation(text_info=text_info, count=151)
+simulation = Simulation(text_info=text_info, count=steps_of_simulation)
 simulation.add(World(people))
 simulation.run()

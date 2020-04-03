@@ -19,6 +19,16 @@ class Simulation - main loop
 <img src="https://github.com/octopusengine/epidemic_simulator/blob/master/simul_10_3_5_2.png" width = 600> 
 
 
+* resistant (blue)
+* not infected (black)
+* infected - asymptomatic (red) 
+* symptomatic infected (yellow)
+* critical condition (violet)
+* recovered (green)
+* recovered a resistant (dark green)
+
+.:.
+
 threshold_resistance: 
    30 => 30% of population is completely resistant 
    (blue color)
@@ -33,18 +43,4 @@ bmax = Brownian motion + / - (orange square)
 
 
 ::::::::::...........
-
-* resistant (blue) 
-
-* not infected (black)
-
-* infected - asymptomatic (red) 
-
-* symptomatic infected (yellow)
-
-* critical condition (violet)
-
-* recovered (green)
-
-* recovered a resistant (dark green)
 

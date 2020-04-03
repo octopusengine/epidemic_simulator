@@ -1,3 +1,9 @@
+Prepare:
+<code>pip install pygame</code>
+or <code>python -m pip install pygame</code>
+or <code>pip3 ...</code>
+
+
 world size: worldXY (xmax, ymax)
 
 people = the total number of people in the simulated environment (default 1000, try 500, 1000, 2000)

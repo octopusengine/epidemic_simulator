@@ -25,7 +25,7 @@ class Simulation - main loop
 * symptomatic infected (yellow)
 * critical condition (violet)
 * recovered (green)
-* recovered a resistant (dark green)
+* recovered and resistant (dark green)
 
 .:.
 

@@ -1,12 +1,12 @@
 world size: worldXY (xmax, ymax)
 
-people = the total number of people in the simulated environment (default 1000)
+people = the total number of people in the simulated environment (default 1000, try 500, 1000, 2000)
 
 class Person => single person
 
     random positon: x,y
     dynamic infection: status vector 0-9 (5 = infection, red color)
-    time of inf. red -> yellow
+    time of infection: red (7 day) -> yellow (30 days) -> green     
     ...
     
     
@@ -33,9 +33,8 @@ Person:
 .:.
 
 threshold_resistance: 
-   30 => 30% of population is completely resistant 
-   (blue color)
-
+   10 => 10% of population is completely resistant (try 10,20,30,40,50,60)
+   
 
 ::::::::::...........
 

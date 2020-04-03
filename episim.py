@@ -30,15 +30,18 @@ slow_show = False           # True: every Person step by step move
                             # False: all wordl step
 
 #----------------------------------------------------
-colYel = (255,255,0)
-colWhi = (255,255,255)
-colRed = (255,0,0)
+# slow_show = input("Fast or slow? 1/0: ")
+
+#----------------------------------------------------
+colBla = (0,0,0)        # not infected
+colBlu = (0,0,255)      # resistant
+colRed = (255,0,0)      # infected - asymptomatic
+colYel = (255,255,0)    # symptomatic infected
+colMag = (255,0,255)    # critical condition
+colGre = (0,255,0)      # recovered 
+colSil = (200,200,200)  # recovered and resistant
 colOra = (255,126,0)
-colMag = (255,0,255)
-colBlu = (0,0,255)
-colGre = (0,255,0)
-colSil = (200,200,200)
-colBla = (0,0,0) 
+colWhi = (255,255,255)
 
 sizeWinX = worldXY[0] * size + 180
 sizeWinY = worldXY[1] * size + 35
@@ -57,11 +60,6 @@ chy = 600
 chx = xi-39
 ydel = 2
 
-def distance(x1,y1,x2,y2):
-    x = abs(x1-x2)
-    y = abs(y1-y2)
-    return sqrt(x*x + y*y)
-
 
 class Person():
     def __init__(self, i, z = 0):
@@ -79,6 +77,11 @@ class Person():
 
     def info(self):
         print(self.i,self.x,self.y,self.z)
+
+    def distance(self, other):
+         x = abs(self.x - other.x)
+         y = abs(self.y - other.y)
+         return sqrt(x*x + y*y)
 
     def ds_show(self, screen, col, flip = True): #direct single
         pygame.draw.rect(screen,col,(self.x*size,self.y*size,size,size))
@@ -150,7 +153,7 @@ class World():
                # test
                for j in range(self.num):
                    if self.people[j].resistance <= 100-threshold_resistance:
-                      dist = distance(self.people[i].x, self.people[i].y, self.people[j].x, self.people[j].y) 
+                      dist = self.people[i].distance(self.people[j])
                       if dist < dist_infect:
                            self.people[j].z = 5
                if self.people[i].ti > time_infect:

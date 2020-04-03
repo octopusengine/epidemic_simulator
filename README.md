@@ -1,7 +1,6 @@
 world size: worldXY (xmax, ymax)
 
-people = number of "persons" (default 1000)
-
+people = the total number of people in the simulated environment (default 1000)
 
 class Person => single person
 
@@ -11,7 +10,7 @@ class Person => single person
     ...
     
     
-class World => all persons 
+class World => all people 
 
 class Simulation - main loop
 

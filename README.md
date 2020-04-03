@@ -1,6 +1,6 @@
 world size: worldXY (xmax, ymax)
 
-people = number of "persons" 
+people = number of "persons" (default 1000)
 
 
 class Person => single person
@@ -18,7 +18,11 @@ class Simulation - main loop
    
 <img src="https://github.com/octopusengine/epidemic_simulator/blob/master/simul_10_3_5_2.png" width = 600> 
 
+dist_infect = Distance infection (purple circle)
 
+brown_mov_max = Brownian motion + / - (orange square)  -> random motion: +/-(x), +/-(y)
+
+Person:
 * resistant (blue)
 * not infected (black)
 * infected - asymptomatic (red) 
@@ -32,14 +36,6 @@ class Simulation - main loop
 threshold_resistance: 
    30 => 30% of population is completely resistant 
    (blue color)
-
-
-dist_infect = Distance infection (purple circle)
-
-
-bmax = Brownian motion + / - (orange square) 
-   
-   random motion: +/-x,+/-y
 
 
 ::::::::::...........

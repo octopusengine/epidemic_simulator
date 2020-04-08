@@ -13,7 +13,7 @@ size = 3                    # one person - pygame rectangle
 people = 1500
 
 # main simulation variables
-threshold_resistance = 15   # 0 - nobody / test 30
+threshold_resistance = 10   # 0 - nobody / test 30
                             # = a totally resistant percentage of the population
                             
 dist_infect = 2             # distance - infection 3 (100*100)/ 5 / 7 / 10
@@ -63,8 +63,7 @@ yi1 = sizeWinY - 230
 # chart position:
 chy = 600
 chx = 150
-ydel = people/500
-
+ydel = people/500*2
 
 class Person():
     def __init__(self, i, z = 0):
@@ -95,14 +94,20 @@ class Person():
 
 
 class World():
-    def __init__(self, n=10, ofx=0, ofy=0):
+    def __init__(self, n=10, ofx=0, ofy=0, init_vector=()):        
         self.num = n
         self.old_inf = 1
         self.ofx = ofx
         self.ofy = ofy
+        #init_vector2 = (people, threshold_resistance, dist_infect, brown_mov_max+1)
+        self.threshold_resistance = init_vector[1]
+        self.dist_infect = init_vector[2]
+        self.brown_mov_max = init_vector[3]
+
         self.people = []
         for i in range(self.num):
             self.people.append(Person(i))
+
 
     def info(self):
         i = 0
@@ -114,10 +119,10 @@ class World():
         for i in range(self.num):
             self.people[i].ds_show(screen, colSil, slow_show, ofx = self.ofx) # xxx ofx = self.ofx > art
         
-            self.people[i].x += randint(-brown_mov_max,brown_mov_max)
+            self.people[i].x += randint(-self.brown_mov_max,self.brown_mov_max)
             if (self.people[i].x < 0): self.people[i].x = 0
             if (self.people[i].x > worldXY[0]): self.people[i].x = worldXY[0]
-            self.people[i].y += randint(-brown_mov_max,brown_mov_max)
+            self.people[i].y += randint(-self.brown_mov_max,self.brown_mov_max)
             if (self.people[i].y < 0): self.people[i].y = 0
             if (self.people[i].y > worldXY[1]): self.people[i].y = worldXY[1]
 
@@ -125,7 +130,7 @@ class World():
                 self.people[i].z = 6
                 self.people[i].resistance = 90
 
-            if self.people[i].resistance > 100-threshold_resistance:
+            if self.people[i].resistance > 100-self.threshold_resistance:
                 col = colBlu
             else:
                 col = colBla
@@ -162,9 +167,9 @@ class World():
         
                # test
                for j in range(self.num):
-                   if self.people[j].resistance <= 100-threshold_resistance:
+                   if self.people[j].resistance <= 100-self.threshold_resistance:
                       dist = self.people[i].distance(self.people[j])
-                      if dist < dist_infect:
+                      if dist < self.dist_infect:
                            self.people[j].z = 5
                if self.people[i].ti > time_infect:
                    numti += 1
@@ -179,6 +184,9 @@ class World():
         self.old_inf = numi
 
         # text:
+        text_i = "people " + str(people) + " | resistence " +  str(self.threshold_resistance) + "% | inf.distance " + str(self.dist_infect) + " | move " + str(self.brown_mov_max)
+        text_info = font.render(text_i, True, colBla)
+        
         text1 = font.render("time: " + str(world_time) + " | R0: "+ str(r0), True, colBla)
         text2 = font.render("infected " + str(numi), True, colRed)
         text3 = font.render("symptom. " + str(numti), True, colYel)
@@ -190,6 +198,8 @@ class World():
         screen.blit(text3, (self.ofx+xi, yi1 + yiadd * 2))
         screen.blit(text4, (self.ofx+xi, yi1 + yiadd * 3))
         screen.blit(text5, (self.ofx+xi, yi1 + yiadd * 4))
+
+        screen.blit(text_info, (self.ofx+10, sizeWinY-30))
         
         # chart:
         td = 2000/self.num  # steps > 70: 1 / 2
@@ -218,8 +228,7 @@ class World():
 
 
 class Simulation:
-    def __init__(self, text_info, count):
-        self.text_info = text_info
+    def __init__(self, count):
         self.count = count
         self.worlds = []
 
@@ -237,10 +246,6 @@ class Simulation:
         screen.fill(colSil)        
         pygame.display.flip()
 
-        text = font.render(self.text_info, True, colBla)
-        screen.blit(text, (10, sizeWinY-30))
-        pygame.display.flip()
-
     def step(self, world_time):
         for world in self.worlds:
             world.infection(self.screen, world_time)
@@ -255,9 +260,13 @@ class Simulation:
 
 
 # =============== main =================
-text_info = "people " + str(people) + " | resistence " +  str(threshold_resistance) + "% | inf.distance " + str(dist_infect) + " | move " + str(brown_mov_max)
-init_vector = (people, threshold_resistance, dist_infect, brown_mov_max)
-simulation = Simulation(text_info=text_info, count=steps_of_simulation)
-simulation.add(World(people))
-simulation.add(World(people, ofx = 560))
+# two worlds:
+simulation = Simulation(count=steps_of_simulation)
+# init_vector default values +/- delta
+init_vector1 = (people, threshold_resistance, dist_infect, brown_mov_max)
+simulation.add(World(people,ofx=0,init_vector=init_vector1))
+
+init_vector2 = (people, threshold_resistance+50, dist_infect, brown_mov_max+2)
+simulation.add(World(people,ofx=560,init_vector=init_vector2))
+
 simulation.run()

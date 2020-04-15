@@ -16,7 +16,7 @@ people = 1500
 threshold_resistance = 10   # 0 - nobody / test 30
                             # = a totally resistant percentage of the population
                             
-dist_infect = 2             # distance - infection 3 (100*100)/ 5 / 7 / 10
+dist_infect = 2.5             # distance - infection 3 (100*100)/ 5 / 7 / 10
 
 brown_mov_max = 3           # (int) brownian motion  1,2,3, 5
                             # 2 => random (-2,-1,0,1,2)
@@ -29,7 +29,7 @@ time_cure = 30              # 30 - testing - the time required for complete cure
 
 slow_show = False           # True: every Person step by step move
                             # False: all wordl step
-steps_of_simulation = 180
+steps_of_simulation = 240
 
 #----------------------------------------------------
 # slow_show = input("Fast or slow? 1/0: ")
@@ -94,11 +94,13 @@ class Person():
 
 
 class World():
-    def __init__(self, n=10, ofx=0, ofy=0, init_vector=()):        
+    def __init__(self, n=10, ofx=0, ofy=0, init_vector=(), index_sim = 0):        
         self.num = n
         self.old_inf = 1
         self.ofx = ofx
         self.ofy = ofy
+        self.ix = index_sim
+        self.numticMax = 0
         #init_vector2 = (people, threshold_resistance, dist_infect, brown_mov_max+1)
         self.threshold_resistance = init_vector[1]
         self.dist_infect = init_vector[2]
@@ -183,16 +185,23 @@ class World():
 
         self.old_inf = numi
 
+        if (self.ix == 2):
+            if world_time == 60:
+                self.dist_infect = self.dist_infect + 1
+                
         # text:
         text_i = "people " + str(people) + " | resistence " +  str(self.threshold_resistance) + "% | inf.distance " + str(self.dist_infect) + " | move " + str(self.brown_mov_max)
         text_info = font.render(text_i, True, colBla)
+
+        if numtic > self.numticMax:
+            self.numticMax = numtic
         
         text1 = font.render("time: " + str(world_time) + " | R0: "+ str(r0), True, colBla)
         text2 = font.render("infected " + str(numi), True, colRed)
         text3 = font.render("symptom. " + str(numti), True, colYel)
-        text4 = font.render("critical " + str(numtic), True, colMag)
+        text4 = font.render("critical " + str(numtic) + " (max: " + str(self.numticMax) + ")", True, colMag)
         text5 = font.render("rerover. " + str(numtir), True, colGre)
-        pygame.draw.rect(screen,colSil,(self.ofx+xi,yi1,130,170))
+        pygame.draw.rect(screen,colSil,(self.ofx+xi,yi1,130,180))
         screen.blit(text1, (self.ofx+xi, yi1))
         screen.blit(text2, (self.ofx+xi, yi1 + yiadd))
         screen.blit(text3, (self.ofx+xi, yi1 + yiadd * 2))
@@ -264,9 +273,9 @@ class Simulation:
 simulation = Simulation(count=steps_of_simulation)
 # init_vector default values +/- delta
 init_vector1 = (people, threshold_resistance, dist_infect, brown_mov_max)
-simulation.add(World(people,ofx=0,init_vector=init_vector1))
+simulation.add(World(people,ofx=0,init_vector=init_vector1, index_sim = 1))
 
-init_vector2 = (people, threshold_resistance+50, dist_infect, brown_mov_max+2)
-simulation.add(World(people,ofx=560,init_vector=init_vector2))
+init_vector2 = (people, threshold_resistance, dist_infect-1, brown_mov_max-1)
+simulation.add(World(people,ofx=560,init_vector=init_vector2, index_sim = 2))
 
 simulation.run()
